@@ -130,7 +130,7 @@ const RemoveUserById = (id) =>{
     res.status(404).send("Resource not found.");
   } else {
     RemoveUserById(id);
-    res.send();
+    res.status(204).send();
   }
 });
 

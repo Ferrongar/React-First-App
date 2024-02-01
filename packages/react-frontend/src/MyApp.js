@@ -7,13 +7,26 @@ import Form from "./Form";
   function MyApp() {
     const [characters, setCharacters] = useState([]);
 
-    function removeOneCharacter(index) {
+    /*function removeOneCharacter(index) {
         const updated = characters.filter((character, i) => {
           return i !== index;
         });
         setCharacters(updated);
+      }*/
+
+      function removeOneCharacter(index) {
+        const user = characters[index];
+        deleteUser(user["id"])
+        .then((res)=>{if (res.status !== 204)
+          throw new Error("not completed")})
+         .then(() => {const updated = characters.filter((character, i) => {return i !== index});
+        setCharacters(updated)
+      })
+         .catch((error) => {
+           console.log(error);
+         })
       }
-      
+
 
       function updateList(person) { 
         postUser(person)
@@ -39,6 +52,13 @@ import Form from "./Form";
         },
         body: JSON.stringify(person),
       });
+  
+      return promise;
+    }
+
+    function deleteUser(id) {
+      const promise = fetch("Http://localhost:8000/users/".concat("",id), {
+        method: "DELETE"});
   
       return promise;
     }
