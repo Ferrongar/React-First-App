@@ -109,8 +109,11 @@ const addUser = (user) => {
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
+  if(userToAdd["id"] === undefined){
+  userToAdd["id"]= Math.floor(Math.random()*(100000-1)+1).toString(10);
+  }
   addUser(userToAdd);
-  res.send();
+  res.status(201).send(userToAdd);
 });
 
 const RemoveUserById = (id) =>{

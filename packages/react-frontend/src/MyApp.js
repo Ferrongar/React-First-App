@@ -17,7 +17,10 @@ import Form from "./Form";
 
       function updateList(person) { 
         postUser(person)
-          .then(() => setCharacters([...characters, person]))
+          .then((res)=>{if (res.status !== 201)
+           throw new Error("wrong status")
+           return res.json()})
+          .then((json) => setCharacters([...characters, json]))
           .catch((error) => {
             console.log(error);
           })
