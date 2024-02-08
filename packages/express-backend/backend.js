@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import userServices from "./user-services.js";
 
 const app = express();
 const port = 8000;
@@ -69,7 +70,12 @@ app.listen(port, () => {
     const name = req.query.name;
     const job = req.query.job;
 
-    if(name != undefined && job != undefined){
+    userServices.getUsers(name, job)
+    .then((result)=>{
+      res.send(result);
+    })
+
+    /*if(name != undefined && job != undefined){
       let result = findUserByNameAndJob(name, job);
       result = { users_list: result };
       res.send(result);
@@ -86,7 +92,7 @@ app.listen(port, () => {
       res.send(result);
     } else {
       res.send(users);
-    }
+    }*/
   });
 
   const findUserById = (id) =>
@@ -94,12 +100,22 @@ app.listen(port, () => {
 
   app.get("/users/:id", (req, res) => {
   const id = req.params["id"]; //or req.params.id
-  let result = findUserById(id);
+
+  userServices.findUserById(id)
+  .then((result)=> {
+    if (result) res.send(result);
+    else res.status(404).send('Not Found: ${id}');
+  })
+  .catch((error)=>{
+    res.status(500).send(error.name);
+  })
+
+  /*let result = findUserById(id);
   if (result === undefined) {
     res.status(404).send("Resource not found.");
   } else {
     res.send(result);
-  }
+  }*/
 });
 
 const addUser = (user) => {
@@ -107,13 +123,18 @@ const addUser = (user) => {
   return user;
 };
 
-app.post("/users", (req, res) => {
+app.post("/users", async (req, res) => {
   const userToAdd = req.body;
-  if(userToAdd["id"] === undefined){
+
+  userServices.addUser(userToAdd)
+  .then((result) => {
+    res.status(201).send(result);
+  });
+  /*if(userToAdd["id"] === undefined){
   userToAdd["id"]= Math.floor(Math.random()*(100000-1)+1).toString(10);
   }
   addUser(userToAdd);
-  res.status(201).send(userToAdd);
+  res.status(201).send(userToAdd);*/
 });
 
 const RemoveUserById = (id) =>{
@@ -125,12 +146,20 @@ const RemoveUserById = (id) =>{
   app.delete("/users/:id", (req, res) => {
   const id = req.params["id"]; //or req.params.id
 
-  let result = findUserById(id);
+  userServices.deleteUserById(id)
+  .then((result)=> {
+    if (result) res.status(204).send(result);
+    else res.status(404).send('Not Found: ${id}');
+  })
+  .catch((error)=>{
+    res.status(500).send(error.name);
+  })
+  /*let result = findUserById(id);
   if (result === undefined) {
     res.status(404).send("Resource not found.");
   } else {
     RemoveUserById(id);
     res.status(204).send();
-  }
+  }*/
 });
 

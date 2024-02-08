@@ -16,7 +16,7 @@ import Form from "./Form";
 
       function removeOneCharacter(index) {
         const user = characters[index];
-        deleteUser(user["id"])
+        deleteUser(user["_id"])
         .then((res)=>{if (res.status !== 204)
           throw new Error("not completed")})
          .then(() => {const updated = characters.filter((character, i) => {return i !== index});
@@ -35,7 +35,7 @@ import Form from "./Form";
            return res.json()})
           .then((json) => setCharacters([...characters, json]))
           .catch((error) => {
-            console.log(error);
+            console.log(error, "fuck");
           })
     }
 
@@ -66,7 +66,7 @@ import Form from "./Form";
     useEffect(() => {
       fetchUsers()
         .then((res) => res.json())
-        .then((json) => setCharacters(json["users_list"]))
+        .then((json) => setCharacters(json))
         .catch((error) => { console.log(error); });
     }, [] );
     
